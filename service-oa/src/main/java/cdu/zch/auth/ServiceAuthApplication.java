@@ -11,7 +11,6 @@ import org.springframework.context.annotation.ComponentScan;
  **/
 @SpringBootApplication
 @ComponentScan("cdu.zch")
-@MapperScan("cdu.zch.*.mapper")
 public class ServiceAuthApplication {
 
     public static void main(String[] args) {
