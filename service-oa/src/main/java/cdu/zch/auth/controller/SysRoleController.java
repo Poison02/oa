@@ -1,8 +1,10 @@
 package cdu.zch.auth.controller;
 
 import cdu.zch.auth.service.SysRoleService;
+import cdu.zch.auth.service.SysUserRoleService;
 import cdu.zch.common.result.Result;
 import cdu.zch.model.system.SysRole;
+import cdu.zch.vo.system.AssginRoleVo;
 import cdu.zch.vo.system.SysRoleQueryVo;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -14,6 +16,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Zch
@@ -27,13 +30,21 @@ public class SysRoleController {
     @Autowired
     private SysRoleService sysRoleService;
 
-    // 查询所有的角色
-//    @GetMapping("/findAll")
-//    public List<SysRole> findAll() {
-//        // 调用service方法
-//        List<SysRole> list = sysRoleService.list();
-//        return list;
-//    }
+    // 1. 查询所有角色以及当前用户所属角色
+    @ApiOperation(value = "根据用户获取角色数据")
+    @GetMapping("/toAssign/{userId}")
+    public Result toAssign(@PathVariable Long userId) {
+        Map<String, Object> roleMap = sysRoleService.findRoleByUserId(userId);
+        return Result.ok(roleMap);
+    }
+
+    // 2. 为用户分配角色
+     @ApiOperation(value = "根据用户分配角色")
+     @PostMapping("/doAssign")
+     public Result doAssign(@RequestBody AssginRoleVo assginRoleVo) {
+        sysRoleService.doAssign(assginRoleVo);
+        return Result.ok();
+    }
 
     @ApiOperation("查询所有角色")
     @GetMapping("/findAll")
